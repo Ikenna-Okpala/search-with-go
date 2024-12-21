@@ -16,9 +16,17 @@ import (
 type DocRank struct {
 	URL string `json:"url"`
 	Score float64 `json:"score"`
+	Name string `json:"name"`
+	Title string `json:"title"`
+	Description string `json:"description"`
+	Icon string `json:"icon"`
 }
 
 func Process(content string) string {
+
+	if content == ""{
+		return content
+	}
 
 	stopWords, err2:= os.ReadFile("../../internal/processor/stopwords.txt")
 
@@ -30,11 +38,11 @@ func Process(content string) string {
 
 	stopWordsSet := makeStopWordSet((strings.Split(stopWordsLineEnding, "\n")))
 
-	content = removeExtraSpaces(content)
 	content = toLowerCase(content)
 	content = removePunctuation(content)
 	content = removeStopWords(stopWordsSet, content)
 	content = stemWords(content)
+	content = removeExtraSpaces(content)
 
 	return content
 }
@@ -83,7 +91,11 @@ func removeStopWords(stopWordsSet map[string]bool, webText string) string {
 		}
 	}
 
-	return strings.Trim(builder.String(), " ")
+	result:= strings.Trim(builder.String(), " ")
+
+	return result
+
+	
 }
 
 func stemWords(webText string) string {

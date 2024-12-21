@@ -1,8 +1,8 @@
-package webcrawler
+package tfidf
 
 import (
-	"fmt"
 	"math"
+	"webcrawler/internal/webcrawler"
 )
 
 //TF
@@ -10,25 +10,31 @@ import (
 // count number of words in doc
 // document: list of terms
 
-func TF(websites map[string][] string) map[string]map[string] float64 {
+func TF(websites map[string] webcrawler.Website) map[string]map[string] float64 {
 
 	tf:= make(map[string]map[string] float64)
 	for url, content := range websites {
 
 		tf[url] = make(map[string] float64)
 		
-		for _, word:= range content{
+		for _, word:= range content.Words{
 
 			tf[url][word] ++
 		}
 
-		n_words:= len(websites[url])
-
-		fmt.Println("l_words:",n_words)
+		n_words:= len(websites[url].Words)
 
 		for word := range tf[url] {
 
+			// fmt.Println("-------TESTING-------")
+
+			// fmt.Printf("n_words: %v\n", n_words)
+
+			// fmt.Printf("count_word: %s is %v\n", word, tf[url][word])
+
 			tf[url][word] /= float64(n_words)
+
+			
 		}
 
 	}
@@ -36,7 +42,7 @@ func TF(websites map[string][] string) map[string]map[string] float64 {
 	return tf
 }
 
-func IDF(websites map[string] []string) map[string] float64 {
+func IDF(websites map[string] webcrawler.Website) map[string] float64 {
 
 	websiteWordSet := make(map[string]map[string] bool)
 
@@ -44,10 +50,10 @@ func IDF(websites map[string] []string) map[string] float64 {
 
 	nWebsites := len(websites)
 
-	for website, words := range websites {
+	for website, content := range websites {
 		websiteWordSet[website] = make(map[string] bool)
 
-		for _,word := range words{
+		for _,word := range content.Words{
 
 			websiteWordSet[website][word] = true
 			idf[word] = 0
@@ -70,7 +76,7 @@ func IDF(websites map[string] []string) map[string] float64 {
 
 		// fmt.Printf("[%v, %v]", idfWord, freq)
 
-		idf[idfWord] = math.Log2(float64(nWebsites) / freq)
+		idf[idfWord] = math.Log2(float64(1 + nWebsites) / (1 + freq)) + 1
 	}
 	
 	return idf

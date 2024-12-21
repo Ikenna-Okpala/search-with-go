@@ -1,18 +1,22 @@
 CREATE TABLE websites(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    url VARCHAR(2048) NOT NULL
+    url text NOT NULL,
+    title text,
+    icon text,
+    name text NOT NULL,
+    description TEXT
 );
 
 CREATE TABLE keywords(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    word VARCHAR(45) NOT NULL UNIQUE
+    word VARCHAR(100) NOT NULL UNIQUE
 );
 
 CREATE TABLE website_keywords(
     keyword_id UUID NOT NULL,
     website_id UUID NOT NULL,
-    tf_idf REAL NOT NULL,
-    idf REAL NOT NULL,
+    tf_idf NUMERIC NOT NULL,
+    idf NUMERIC NOT NULL,
     PRIMARY KEY (keyword_id, website_id),
     CONSTRAINT fk_websites
         FOREIGN KEY(website_id)
