@@ -32,7 +32,70 @@ This is a hobby project, showcasing my interests in search engine technologies. 
 - Frontend: This project uses [Vite](https://vite.dev/) for frontend tooling and [React](https://react.dev/) as a frontend library. Also, it uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 - Backend: The project uses [Go](https://go.dev/) because Go's concurrency paradigm is simple to work with, enabling a performant web crawler. It uses [Chromedp](https://github.com/chromedp/chromedp) to render dynamic websites in headless chrome. To perform TF-IDF computation, it used a [Go library](https://github.com/agonopol/go-stem?tab=readme-ov-file) as an implementation of the [porter stemming algorithm](https://tartarus.org/martin/PorterStemmer/index.html). When scraping websites, the crawler must respect the restrictions specified in the website's robots.txt file. To parse the robots.txt file, the project used this [Go library](https://github.com/benjaminestes/robots?tab=readme-ov-file).
 
-## Setup
+## Dev Envorionment
+
+### Requirements
+- [Go 1.23+](https://go.dev/dl/)
+- [PostgresSQL 15.3+](https://www.postgresql.org/download/)
+- GCP Project (must have Cloud Storage enabled with a bucket created)
+
+### Steps
+- Clone this repository:
+  - ```git clone https://github.com/Ikenna-Okpala/search-with-go.git```
+ 
+- Enviroment Variables:
+  - In the terminal session, set the following environment variables:
+    - ```export SERVER_PORT=<your-server-port>```
+    -  ```export SERVER_IP=localhost```
+    -  ```export BUCKET_NAME=<your-gcp-cloud-bucket-name>```
+    -  ```export BUCKET_NAME=<your-gcp-cloud-bucket-name>```
+    -  ```export DB_LOCAL_URL=postgresql://<postgres-user>:<password>@localhost/<database-name>?sslmode=disable```
+
+- Dependencies:
+  - In the root of the project, run:
+     - ```go mod download```
+     - For GCP client SDK, ensure the [default credentials](https://cloud.google.com/docs/authentication/application-default-credentials) is configured in your machine before moving on to the next steps
+   
+- Database:
+  - Start a session:
+      - ```psql -U username -d database_name```
+  - Load Schema:
+    - ```\i ${root}/internal/database/schema.sql``` (only works for psql client)
+
+- Build:
+  - Run crawler:
+    - ```cd cmd/crawler``` 
+    - ``` go run . 10``` (10 is arbitrary number of websites to scrape)
+  - Run server:
+    - ``` cd cmd/app```
+    - ```go run .``` (start the web server to serve incoming requests)
+  - Run client:
+    - ```cd client/search-with-go```
+    - ```npm i```
+    - ```npm run dev```
+
+## Approach
+To sort search results based on a user's search query, this project used TF-IDF.
+
+Term Frequency (TF) captures how frequent a word shows up in a website. Furthermore, it tells us how relevant a word is in a website (when a word shows up multiple times, the TF for the word inceases).
+
+```TF(w,d) = Total number of w in d / Total number of words in d, where w is a word, and d is a website```
+
+Inverse Document Frequency (IDF) captures how common a word in an array of websites. The most commond words are expected to have a lower IDF computation.
+
+```IDF(w) = log2(Total number of websites / (Total number of websites that contain the word w + 1)) + 1, the first + 1 prevents negative results from log2, while the second + 1 prevents 0 as an IDF value```
+
+TF-IDF assigns weight to each word in a website by merging TF and IDF computation. The words in a website with higher TF-IDF are more important to the website.
+
+```TFIDF(w, d) = TF(w, d) * IDF(w), where w is a word in website d```
+
+After crawling websites, the TF-IDF computation is performed and the result is stored in a relational [database](https://github.com/Ikenna-Okpala/search-with-go/edit/main/README.md#database-modelling). An [inverted index](https://en.wikipedia.org/wiki/Inverted_index) on words in websites is maintained, for blazingly fast retreival. Note that words are stored as root forms in the database using the [porter stemming algorithm](https://tartarus.org/martin/PorterStemmer/index.html).
+
+At query time, the user's query consist of words reduced to their root form using the stemming algorithm. Using the inverted index, the database retrieves websites that contain words that matches the user's query. After, the program computes the TF-IDF of the query using the IDF retrieved from the database and the term frequency defined by:
+
+```TF(w) = Frequency of w / Frequency of q, where w is a word, and q is the word with the highest frequency```
+
+How can we know which websites are more relevant to a query? We represent each word in the query as its own axis in vector space. Then, we use a technique in vector mathematics called Cosine Similarity to compute how closely related the websites are to the query. Finally, the websites are sorted based on the Cosine Similarity score, leading to a ranked list of websites where the top websites are most relevant to the user's query.
 
 
 
