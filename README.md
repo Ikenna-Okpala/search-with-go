@@ -97,6 +97,13 @@ At query time, the user's query consist of words reduced to their root form usin
 
 How can we know which websites are more relevant to a query? We represent each word in the query as its own axis in vector space. Then, we use a technique in vector mathematics called Cosine Similarity to compute how closely related the websites are to the query. Finally, the websites are sorted based on the Cosine Similarity score, leading to a ranked list of websites where the top websites are most relevant to the user's query.
 
+## Next Steps
+- Page Rank: Currently, the search engine ranks search results only using TF-IDF (text matching). As a result, search results are not completely ordered based on importance to the user's query. The solution is to implement a [page rank algorithm](https://en.wikipedia.org/wiki/PageRank) that counts the number of links that points to a website, indicating website importance. The result is a sorted list of search results based on importance.
+  - ```Rank Score = w1 * Cosine Similarity + w2 * Page Rank, where w1 and w2 are arbitrary weights```
+- Scaling:
+  - Crawlers: Currently, the crawlers run in parallel on a single machine. When crawling the internet, the project needs distributed web crawlers to improve performance. To share crawling state (visited links) among crawler nodes, [Redis data structures](https://redis.io/technology/data-structures/) will be used.
+  - Indexes: Currently, 
+
 
 
 
