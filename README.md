@@ -7,12 +7,12 @@ This is the [deployment](https://jocular-bubblegum-a47d9d.netlify.app/) for the 
 ![demo-release](https://github.com/user-attachments/assets/1377f4fc-bb20-43f5-b77d-48b04cde73c7)
 
 ## Table of Content:
-- [About](https://github.com/Ikenna-Okpala/search-with-go/edit/main/README.md#about)
-- [System Design](https://github.com/Ikenna-Okpala/search-with-go/edit/main/README.md#system-design)
-- [Technologies](https://github.com/Ikenna-Okpala/search-with-go/edit/main/README.md#system-design)
-- [Dev Environmet](https://github.com/Ikenna-Okpala/search-with-go/edit/main/README.md#system-design)
-- [Approach](https://github.com/Ikenna-Okpala/search-with-go/edit/main/README.md#system-design)
-- [Next Steps](https://github.com/Ikenna-Okpala/search-with-go/edit/main/README.md#system-design)
+- [About](https://github.com/Ikenna-Okpala/search-with-go/tree/main?tab=readme-ov-file#about)
+- [System Design](https://github.com/Ikenna-Okpala/search-with-go/tree/main?tab=readme-ov-file#about)
+- [Technologies](https://github.com/Ikenna-Okpala/search-with-go/tree/main?tab=readme-ov-file#about)
+- [Dev Environmet](https://github.com/Ikenna-Okpala/search-with-go/tree/main?tab=readme-ov-file#about)
+- [Approach](https://github.com/Ikenna-Okpala/search-with-go/tree/main?tab=readme-ov-file#about)
+- [Next Steps](https://github.com/Ikenna-Okpala/search-with-go/tree/main?tab=readme-ov-file#about)
 
 ## About
 This is a hobby project, showcasing my interests in search engine technologies. I researched how search engines work, then implemented techniques in natural language processing such as TF-IDF computation, information retreival such as inverted indices, and web scraping such as politeness. The result is a search engine that ranks web pages based on their relevance to the user's query.
